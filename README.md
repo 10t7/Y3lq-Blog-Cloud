@@ -20,6 +20,10 @@ Y3lq-Blog 是基于微服务架构的前后端分离精简博客系统
 [后台管理演示](https://admin.10t7.tech)
 
 
+## 架构图
+<img width="920" alt="image" src="https://user-images.githubusercontent.com/87005680/196652444-6b7170e2-816f-4082-a232-d4fb2617e175.png">
+
+
 
 ## 核心技术
 
