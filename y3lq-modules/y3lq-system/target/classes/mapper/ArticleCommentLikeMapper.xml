@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.y3lq.blog.system.mapper.ArticleCommentLikeMapper">
+
+    <resultMap type="cn.y3lq.blog.system.entity.ArticleCommentLikeEntity" id="articleCommentLikeEntity">
+        <result property="likeId" column="like_id"/>
+        <result property="commentId" column="comment_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <insert id="insertArticleCommentLike">
+        INSERT INTO `article_comment_like` (comment_id, user_id, create_time)
+        VALUES
+        <foreach collection="addArticleCommentLikeEntities" item="articleCommentLike" separator=",">
+            (#{articleCommentLike.commentId},#{articleCommentLike.userId},sysdate())
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        comment_id=VALUES(comment_id),user_id=VALUES(user_id)
+    </insert>
+
+    <delete id="deleteArticleCommentLike">
+        DELETE
+        FROM `article_comment_like`
+        WHERE
+        <foreach collection="removeArticleCommentLikeEntities" item="articleCommentLike" separator="OR">
+            (comment_id = #{articleCommentLike.commentId} AND user_id = #{articleCommentLike.userId})
+        </foreach>
+
+    </delete>
+
+    <select id="countArticleCommentLike" resultType="int">
+        SELECT COUNT(comment_id)
+        FROM `article_comment_like`
+        WHERE comment_id = #{commentId}
+    </select>
+
+    <select id="selectOne" resultMap="articleCommentLikeEntity">
+        SELECT like_id, comment_id, user_id, create_time
+        FROM `article_comment_like`
+        WHERE comment_id = #{commentId}
+          AND user_id = #{userId}
+    </select>
+
+
+</mapper>

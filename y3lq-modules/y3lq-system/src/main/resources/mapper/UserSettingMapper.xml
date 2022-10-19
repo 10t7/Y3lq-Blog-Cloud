@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.y3lq.blog.system.mapper.UserSettingMapper">
+
+    <resultMap type="cn.y3lq.blog.system.entity.UserSettingEntity" id="userSettingEntityMap">
+        <result property="userSettingId" column="user_setting_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="replyReceiveEmail" column="reply_receive_email"/>
+        <result property="newReceiveEmail" column="new_receive_email"/>
+        <result property="showPersonInfo" column="show_person_info"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <select id="getUserSettingByUserId" resultMap="userSettingEntityMap">
+        SELECT user_setting_id,
+               user_id,
+               reply_receive_email,
+               new_receive_email,
+               show_person_info,
+               create_time,
+               update_time
+        FROM user_setting
+        WHERE user_id = #{userId}
+    </select>
+
+    <insert id="insertUserSetting" keyProperty="userSettingId" useGeneratedKeys="true">
+        INSERT INTO `user_setting` (user_id, reply_receive_email, new_receive_email, show_person_info,
+                                    create_time)
+        VALUES (#{userId}, #{replyReceiveEmail}, #{newReceiveEmail}, #{showPersonInfo}, sysdate())
+    </insert>
+
+    <select id="isHasInit" resultType="int">
+        SELECT COUNT(1)
+        FROM `user_setting`
+        WHERE user_id = #{userId}
+    </select>
+
+    <update id="updateUserSetting">
+        UPDATE `user_setting`
+        SET
+        <if test="replyReceiveEmail != null and replyReceiveEmail != ''">reply_receive_email= #{replyReceiveEmail},</if>
+        <if test="newReceiveEmail !=null and newReceiveEmail !=''">new_receive_email= #{newReceiveEmail},</if>
+        <if test="showPersonInfo != null and showPersonInfo !=''">show_person_info = #{showPersonInfo},</if>
+        update_time = sysdate() WHERE user_id = #{userId}
+    </update>
+
+</mapper>

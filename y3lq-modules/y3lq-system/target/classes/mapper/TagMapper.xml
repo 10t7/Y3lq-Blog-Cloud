@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.y3lq.blog.system.mapper.TagMapper">
+
+    <resultMap type="cn.y3lq.blog.system.entity.TagEntity" id="tagEntityMap">
+        <result property="tagId" column="tag_id"/>
+        <result property="name" column="name"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="orderNum" column="order_num"/>
+        <result property="status" column="status"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <resultMap type="cn.y3lq.blog.system.vo.TagVO" id="tagVOMap">
+        <result property="tagId" column="tag_id"/>
+        <result property="name" column="name"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="orderNum" column="order_num"/>
+        <result property="status" column="status"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createUsername" column="create_username"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <!--    <select id="selectTagList" resultMap="tagVOMap">-->
+    <!--        SELECT-->
+    <!--        <if test="tagId != null and tagId != 0">tag_id,</if>-->
+    <!--        <if test="name != null and name !=''">`name`,</if>-->
+    <!--        <if test="parentId != null">parent_id,</if>-->
+    <!--        <if test="orderNum != null and orderNum !=''">`orderNum`,</if>-->
+    <!--        <if test="status != null and status !=''">`status`,</if>-->
+    <!--        <if test="delFlag != null and delFlag !=''">`del_flag`,</if>-->
+    <!--        <if test="type != null and type !=''">`type`,</if>-->
+    <!--        <if test="category != null and category !=''">`category`,</if>-->
+    <!--        <if test="createBy != null and createBy !=''">`create_by`,</if>-->
+    <!--        <if test="createTime != null and createTime !=''">`create_time`,</if>-->
+    <!--        <if test="updateBy != null and updateBy !=''">`update_by`,</if>-->
+    <!--        <if test="updateTime != null and updateTime !=''">`update_time`,</if>-->
+    <!--        FROM `tag`-->
+    <!--        <where>-->
+    <!--            <if test="tagId != null and tagId != 0">tag_id,</if>-->
+    <!--            <if test="name != null and name !=''">`name`,</if>-->
+    <!--            <if test="parentId != null">parent_id,</if>-->
+    <!--            <if test="orderNum != null and orderNum !=''">`orderNum`,</if>-->
+    <!--            <if test="status != null and status !=''">`status`,</if>-->
+    <!--            <if test="delFlag != null and delFlag !=''">`del_flag`,</if>-->
+    <!--            <if test="type != null and type !=''">`type`,</if>-->
+    <!--            <if test="category != null and category !=''">`category`,</if>-->
+    <!--            <if test="createBy != null and createBy !=''">`create_by`,</if>-->
+    <!--            <if test="createTime != null and createTime !=''">`create_time`,</if>-->
+    <!--            <if test="updateBy != null and updateBy !=''">`update_by`,</if>-->
+    <!--            <if test="updateTime != null and updateTime !=''">`update_time`,</if>-->
+    <!--        </where>-->
+    <!--    </select>-->
+
+
+    <select id="selectTagList" resultMap="tagVOMap">
+        SELECT
+        t.tag_id,t.name,t.parent_id,t.order_num,t.status,t.del_flag,t.create_by,u.username AS
+        create_username,t.create_time,t.update_by,t.update_time
+        FROM `tag` t , `user` u
+        WHERE t.del_flag = '0' AND u.user_id = t.create_by
+        <if test="name != null and name !=''">AND t.name LIKE concat('%',#{name},'%')</if>
+        <if test="status != null and status !=''">AND t.status = #{status}</if>
+        ORDER BY t.order_num
+    </select>
+
+    <insert id="insertTag">
+        INSERT INTO `tag` (
+        <if test="name != null and name !=''">name,</if>
+        <if test="parentId != null">parent_id,</if>
+        <if test="orderNum != null and name !=''">order_num,</if>
+        <if test="status != null and status !=''">status,</if>
+        <if test="delFlag != null and delFlag !=''">del_flag,</if>
+        <if test="createBy != null and createBy !=''">create_by,</if>
+        create_time) VALUES (
+        <if test="name != null and name !=''">#{name},</if>
+        <if test="parentId != null">#{parentId},</if>
+        <if test="orderNum != null and name !=''">#{orderNum},</if>
+        <if test="status != null and status !=''">#{status},</if>
+        <if test="delFlag != null and delFlag !=''">#{delFlag},</if>
+        <if test="createBy != null and createBy !=''">#{createBy},</if>
+        sysdate()
+        )
+    </insert>
+
+    <select id="getTagCategoryList" resultMap="tagEntityMap">
+        SELECT tag_id, name, order_num, status
+        FROM `tag`
+        WHERE del_flag = '0'
+          AND parent_id = 0
+    </select>
+
+    <select id="selectTagByTagId" resultMap="tagEntityMap">
+        SELECT tag_id,
+               name,
+               parent_id,
+               order_num,
+               status,
+               del_flag,
+               create_by,
+               create_time,
+               update_by,
+               update_time
+        FROM `tag`
+        WHERE del_flag = '0'
+          AND tag_id = #{tagId}
+    </select>
+
+    <update id="updateTag">
+        UPDATE `tag` SET
+        <if test="name != null and name !=''">name = #{name},</if>
+        <if test="parentId != null">parent_id = #{parentId},</if>
+        <if test="orderNum != null and name !=''">order_num = #{orderNum},</if>
+        <if test="createBy != null and createBy !=''">update_by = #{updateBy},</if>
+        update_time = sysdate() WHERE tag_id = #{tagId}
+    </update>
+
+    <select id="checkHasChildren" resultType="int">
+        SELECT COUNT(1)
+        FROM `tag`
+        WHERE parent_id = #{tagId}
+          AND del_flag = '0'
+    </select>
+
+    <update id="deleteByTagId">
+        UPDATE `tag`
+        SET del_flag = '1'
+        WHERE tag_id = #{tagId}
+    </update>
+
+    <update id="changeStatus">
+        UPDATE `tag`
+        SET status = #{status}
+        WHERE tag_id = #{tagId}
+           OR parent_id = #{tagId}
+    </update>
+
+    <select id="getNameList" resultMap="tagVOMap">
+        SELECT tag_id, name, parent_id
+        FROM `tag`
+        WHERE del_flag = '0'
+        AND status = '0'
+        <if test="name != null and name !=''">AND name LIKE concat('%',#{name},'%')</if>
+        ORDER BY order_num
+    </select>
+
+</mapper>

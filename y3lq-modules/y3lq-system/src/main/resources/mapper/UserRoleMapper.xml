@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.y3lq.blog.system.mapper.UserRoleMapper">
+
+    <resultMap type="cn.y3lq.blog.system.entity.UserRoleEntity" id="userRoleMap">
+        <result property="userId" column="user_id"/>
+        <result property="roleId" column="role_id"/>
+    </resultMap>
+
+    <insert id="insertUserRole">
+        INSERT INTO `user_role` (user_id, role_id)
+        VALUES
+        <foreach collection="list" item="userRole" separator=",">
+            (#{userRole.userId},#{userRole.roleId})
+        </foreach>
+
+    </insert>
+
+    <select id="getRoleIds" resultType="long">
+        SELECT role_id
+        FROM `user_role`
+        WHERE user_id = #{userId}
+    </select>
+
+    <delete id="deleteUserRoleByUserId">
+        DELETE
+        FROM `user_role`
+        WHERE user_id = #{userId}
+    </delete>
+
+    <select id="getRoleIdSet" resultType="Long" parameterType="Long">
+        SELECT role_id FROM `user_role` WHERE
+        <foreach collection="array" separator="OR" item="userId">
+            user_id = #{userId}
+        </foreach>
+    </select>
+
+    <delete id="deleteUserRoleByUserIds" parameterType="Long">
+        DELETE
+        FROM `user_role`
+        WHERE
+        <foreach collection="array" separator="OR" item="userId">
+            user_id = #{userId}
+        </foreach>
+    </delete>
+
+    <select id="countUserRoleByRoleId" resultType="int">
+        SELECT COUNT(1)
+        FROM `user_role`
+        WHERE role_id = #{roleId};
+    </select>
+
+    <delete id="deleteUserRole">
+        DELETE
+        FROM `user_role`
+        WHERE role_id = #{roleId}
+        AND user_id IN
+        <foreach collection="userIds" item="userId" open="(" close=")" separator=",">
+            #{userId}
+        </foreach>
+    </delete>
+
+    <insert id="insertRoleToUsers">
+        INSERT INTO `user_role`(user_id,role_id) VALUES
+        <foreach collection="userIds" item="userId" separator=",">
+            (#{userId},#{roleId})
+        </foreach>
+    </insert>
+
+
+</mapper>

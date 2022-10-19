@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.y3lq.blog.system.mapper.RoleMapper">
+
+    <resultMap type="cn.y3lq.blog.system.entity.RoleEntity" id="roleEntityMap">
+        <result property="roleId" column="role_id"/>
+        <result property="name" column="name"/>
+        <result property="roleKey" column="role_key"/>
+        <result property="status" column="status"/>
+        <result property="roleSort" column="role_sort"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <resultMap id="roleListVOMap" type="cn.y3lq.blog.system.vo.RoleListVO">
+        <result property="roleId" column="role_id"/>
+        <result property="name" column="name"/>
+        <result property="roleKey" column="role_key"/>
+        <result property="status" column="status"/>
+        <result property="roleSort" column="role_sort"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <resultMap type="cn.y3lq.blog.system.vo.RoleVO" id="roleVOMap">
+        <result property="roleId" column="role_id"/>
+        <result property="name" column="name"/>
+        <result property="roleKey" column="role_key"/>
+        <result property="status" column="status"/>
+        <result property="roleSort" column="role_sort"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <collection property="menuIds" ofType="long"
+                    select="selectRoleMenus" column="role_id"/>
+    </resultMap>
+
+
+    <select id="getRoleKeys" resultType="String">
+        SELECT r.role_key
+        FROM `role` r,
+             `user_role` ur
+        WHERE r.del_flag = '0'
+          AND r.status = '0'
+          AND ur.user_id = #{userId}
+          AND ur.role_id = r.role_id
+    </select>
+
+    <select id="selectRoleList" resultMap="roleListVOMap">
+        SELECT r.role_id,r.name,r.role_key,r.role_sort,r.status,r.del_flag,r.create_time,r.remark
+        FROM `role` r
+        WHERE r.del_flag = '0'
+        <if test="roleId != null and roleId !=0">
+            AND r.role_id = #{roleId}
+        </if>
+        <if test="name != null and name !=''">
+            AND r.name like concat('%',#{name},'%')
+        </if>
+        <if test="status != null and status !=''">
+            AND r.status = #{status}
+        </if>
+        <if test="roleKey != null and roleKey !=''">
+            AND r.role_key like concat('%',#{roleKey},'%')
+        </if>
+        ORDER BY r.role_sort
+    </select>
+
+
+    <select id="getRoleByRoleId" resultMap="roleEntityMap">
+        SELECT r.role_id,
+               r.name,
+               r.role_key,
+               r.status,
+               r.role_sort,
+               r.del_flag,
+               r.create_by,
+               r.create_time,
+               r.update_by,
+               r.update_time,
+               r.remark
+        FROM `role` r
+        WHERE r.del_flag = '0'
+          AND r.role_id = #{roleId}
+    </select>
+
+    <select id="countRoleName" resultType="int">
+        SELECT count(1)
+        FROM `role`
+        WHERE name = #{name}
+          AND del_flag = '0'
+    </select>
+
+    <select id="countRoleKey" resultType="int">
+        SELECT count(1)
+        FROM `role`
+        WHERE role_key = #{roleKey}
+          AND del_flag = '0'
+    </select>
+
+    <insert id="insertRole" useGeneratedKeys="true" keyProperty="roleId">
+        INSERT INTO `role` (
+        <if test="roleId != null and roleId !=0">role_id,</if>
+        <if test="name !=null and name !=''">`name`,</if>
+        <if test="roleKey !=null and roleKey !=''">`role_key`,</if>
+        <if test="status !=null and status !=''">`status`,</if>
+        <if test="roleSort !=null and roleSort !=''">`role_sort`,</if>
+        <if test="delFlag !=null and delFlag !=''">`del_flag`,</if>
+        <if test="createBy !=null and createBy !=''">`create_by`,</if>
+        create_time
+        <if test="remark !=null and remark !=''">,`remark`</if>
+        )VALUES (
+        <if test="roleId != null and roleId !=0">#{roleId},</if>
+        <if test="name !=null and name !=''">#{name},</if>
+        <if test="roleKey !=null and roleKey !=''">#{roleKey},</if>
+        <if test="status !=null and status !=''">#{status},</if>
+        <if test="roleSort !=null and roleSort !=''">#{roleSort},</if>
+        <if test="delFlag !=null and delFlag !=''">#{delFlag},</if>
+        <if test="createBy !=null and createBy !=''">#{createBy},</if>
+        sysdate()
+        <if test="remark !=null and remark !=''">,#{remark}</if>
+        )
+    </insert>
+
+
+    <update id="updateRole">
+        UPDATE `role` SET
+        <if test="name !=null and name !=''">name = #{name},</if>
+        <if test="roleKey !=null and roleKey !=''">role_key = #{roleKey},</if>
+        <if test="status !=null and status !=''">status = #{status},</if>
+        <if test="roleSort !=null and roleSort !=''">role_sort = #{roleSort},</if>
+        <if test="updateBy !=null and updateBy !=''">update_by = #{updateBy},</if>
+        update_time = sysdate()
+        <if test="remark !=null and remark !=''">,remark = #{remark}</if>
+        WHERE role_id = #{roleId}
+    </update>
+
+    <update id="deleteRole">
+        UPDATE `role`
+        SET del_flag = '1'
+        WHERE
+        <foreach collection="roleIds" separator="OR" item="roleId">
+            role_id = #{roleId}
+        </foreach>
+    </update>
+
+    <select id="getRoleListByUserId" resultMap="roleEntityMap">
+        SELECT r.role_id,
+               r.name,
+               r.role_key,
+               r.status,
+               r.role_sort,
+               r.del_flag,
+               r.create_by,
+               r.create_time,
+               r.update_by,
+               r.update_time,
+               r.remark
+        FROM `role` r
+                 LEFT JOIN `user_role` ur ON ur.role_id = r.role_id
+                 LEFT JOIN `user` u ON u.user_id = ur.user_id
+        WHERE u.user_id = #{userId}
+          AND r.status = '0'
+          AND r.del_flag = '0'
+          AND u.status = '0'
+          AND u.del_flag = '0'
+    </select>
+
+    <select id="getAllRoleList" resultMap="roleEntityMap">
+        SELECT role_id, `name`, role_sort, status
+        FROM `role`
+        WHERE del_flag = '0';
+    </select>
+
+    <select id="getNormalRoleList" resultMap="roleEntityMap">
+        SELECT role_id, `name`, role_sort, status
+        FROM `role`
+        WHERE del_flag = "0"
+            AND role_id = 4
+           OR role_id = 5
+
+    </select>
+
+    <select id="getRoleInfoByRoleId" resultMap="roleVOMap">
+        SELECT r.role_id,
+               r.name,
+               r.role_key,
+               r.status,
+               r.role_sort,
+               r.del_flag,
+               r.create_by,
+               r.create_time,
+               r.update_by,
+               r.update_time,
+               r.remark
+        FROM `role` r
+        WHERE r.del_flag = '0'
+          AND r.role_id = #{roleId}
+    </select>
+
+    <select id="selectRoleMenus" resultType="long">
+        SELECT m.menu_id
+        FROM menu m,
+             role_menu rm
+        WHERE rm.role_id = #{roleId}
+          AND rm.menu_id = m.menu_id
+    </select>
+
+
+</mapper>

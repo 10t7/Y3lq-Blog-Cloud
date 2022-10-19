@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.y3lq.blog.system.mapper.DiaryLikeMapper">
+
+    <resultMap id="diaryLikeVOMap" type="cn.y3lq.blog.system.vo.DiaryLikeVO">
+        <result property="likeId" column="like_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="nickname" column="nickname"/>
+    </resultMap>
+
+    <select id="selectDiaryLikeByDiaryId" resultMap="diaryLikeVOMap">
+        SELECT dl.like_id, dl.user_id, u.nickname, dl.status
+        FROM `diary_like` dl
+                 LEFT JOIN `user` u ON u.user_id = dl.user_id
+        WHERE dl.diary_id = #{diaryId}
+          AND u.del_flag = '0'
+        ORDER BY dl.create_time DESC
+    </select>
+
+    <insert id="insertDiaryLike">
+        INSERT INTO `diary_like` (diary_id, user_id,nickname,status, create_time)
+        VALUES
+        <foreach collection="diaryLikeEntities" item="diaryLike" separator=",">
+            (#{diaryLike.diaryId}, #{diaryLike.userId}, #{diaryLike.nickname}, #{diaryLike.status}, sysdate())
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        diary_id = VALUES(diary_id), user_id = VALUES(user_id), status = VALUES(status)
+    </insert>
+
+
+</mapper>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.y3lq.blog.system.mapper.ArticleCommentMapper">
+    <resultMap id="articleCommentEntityMap" type="cn.y3lq.blog.system.entity.ArticleCommentEntity">
+        <result property="commentId" column="comment_id"/>
+        <result property="articleId" column="article_id"/>
+        <result property="firstCommentId" column="first_comment_id"/>
+        <result property="toUserId" column="to_user_id"/>
+        <result property="fromUserId" column="from_user_id"/>
+        <result property="content" column="content"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+    <resultMap id="ArticleCommentVO" type="cn.y3lq.blog.system.vo.ArticleCommentVO">
+        <result property="commentId" column="comment_id"/>
+        <result property="articleId" column="article_id"/>
+        <result property="firstCommentId" column="first_comment_id"/>
+        <result property="toNickname" column="to_nickname"/>
+        <result property="toUserId" column="to_user_id"/>
+        <result property="fromNickname" column="from_nickname"/>
+        <result property="avatar" column="avatar"/>
+        <result property="fromUserId" column="from_user_id"/>
+        <result property="content" column="content"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+
+    <insert id="commentArticle" useGeneratedKeys="true" keyProperty="commentId">
+        INSERT INTO `article_comment` (
+        <if test="articleId != null">article_id,</if>
+        <if test="firstCommentId != null">first_comment_id,</if>
+        <if test="toUserId != null">to_user_id,</if>
+        <if test="fromUserId != null">from_user_id,</if>
+        <if test="content != null and content != ''">content,</if>
+        <if test="delFlag != null and delFlag != ''">del_flag,</if>
+        create_time
+        ) VALUES (
+        <if test="articleId != null">#{articleId},</if>
+        <if test="firstCommentId != null">#{firstCommentId},</if>
+        <if test="toUserId != null">#{toUserId},</if>
+        <if test="fromUserId != null">#{fromUserId},</if>
+        <if test="content != null and content != ''">#{content},</if>
+        <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+        sysdate()
+        )
+    </insert>
+
+    <select id="selectArticleCommentList" resultMap="ArticleCommentVO">
+        SELECT ac.comment_id,
+               ac.article_id,
+               ac.first_comment_id,
+               ac.to_user_id,
+               ac.from_user_id,
+               u.nickname AS from_nickname,
+               u.avatar,
+               ac.content,
+               ac.create_time
+        FROM `article_comment` ac
+                 LEFT JOIN `user` u
+                           ON u.user_id = ac.from_user_id
+        WHERE ac.article_id = #{articleId}
+          AND ac.first_comment_id = 0
+          AND ac.del_flag = 0
+        ORDER BY ac.create_time DESC
+    </select>
+
+    <select id="countArticleComment" resultType="int">
+        SELECT COUNT(*)
+        FROM `article_comment`
+        WHERE del_flag = 0
+          AND first_comment_id = #{commentId}
+    </select>
+
+    <select id="articleCommentChildren" resultMap="ArticleCommentVO">
+        SELECT ac.comment_id,
+               ac.article_id,
+               ac.first_comment_id,
+               ac.to_user_id,
+               ac.from_user_id,
+               u.avatar,
+               u.nickname AS from_nickname,
+               ac.content,
+               ac.create_time
+        FROM `article_comment` ac
+                 LEFT JOIN `user` u
+                           ON u.user_id = ac.from_user_id
+        WHERE ac.first_comment_id = #{commentId}
+          AND ac.del_flag = 0
+        ORDER BY ac.create_time DESC
+    </select>
+
+    <select id="selectArticleCommentById" resultMap="ArticleCommentVO">
+        SELECT ac.comment_id,
+               ac.article_id,
+               ac.first_comment_id,
+               ac.to_user_id,
+               ac.from_user_id,
+               u.avatar,
+               u.nickname AS from_nickname,
+               ac.content,
+               ac.create_time
+        FROM `article_comment` ac
+                 LEFT JOIN `user` u
+                           ON u.user_id = ac.from_user_id
+        WHERE ac.comment_id = #{commentId}
+          AND ac.del_flag = '0'
+    </select>
+
+    <update id="deleteArticleComment">
+        UPDATE article_comment
+        SET del_flag = "1"
+        WHERE comment_id = #{commentId};
+    </update>
+
+    <update id="deleteArticleCommentAndChildren">
+        UPDATE article_comment
+        SET del_flag = "1"
+        WHERE comment_id = #{commentId}
+           OR first_comment_id = #{commentId}
+    </update>
+
+    <select id="countChildComment" resultType="int">
+        SELECT COUNT(*)
+        FROM `article_comment`
+        WHERE first_comment_id = #{commentId}
+          AND del_flag = '0'
+    </select>
+
+</mapper>

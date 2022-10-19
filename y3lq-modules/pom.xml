@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>Y3lq-Blog-Cloud</artifactId>
+        <groupId>cn.y3lq.blog</groupId>
+        <version>1.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>y3lq-modules</artifactId>
+    <packaging>pom</packaging>
+
+    <description>Y3lq-Blog业务聚合模块</description>
+
+    <modules>
+        <module>y3lq-system</module>
+        <module>y3lq-thirdparty</module>
+    </modules>
+
+</project>

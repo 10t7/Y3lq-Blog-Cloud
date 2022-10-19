@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>cn.y3lq.blog</groupId>
+    <artifactId>Y3lq-Blog-Cloud</artifactId>
+    <version>1.0</version>
+
+    <packaging>pom</packaging>
+    <description>Y3lq-Blog微服务系统</description>
+
+    <modules>
+        <module>y3lq-api</module>
+        <module>y3lq-auth</module>
+        <module>y3lq-common</module>
+        <module>y3lq-gateway</module>
+        <module>y3lq-modules</module>
+    </modules>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
+        <spring-boot.version>2.6.7</spring-boot.version>
+        <spring-cloud.version>2021.0.1</spring-cloud.version>
+        <spring-cloud-alibaba.version>2021.0.1.0</spring-cloud-alibaba.version>
+        <alibaba.nacos.version>2.0.4</alibaba.nacos.version>
+        <spring-boot-admin.version>2.6.7</spring-boot-admin.version>
+        <spring-boot.mybatis>2.2.2</spring-boot.mybatis>
+        <swagger.fox.version>3.0.0</swagger.fox.version>
+        <swagger.core.version>1.6.2</swagger.core.version>
+        <tobato.version>1.27.2</tobato.version>
+        <kaptcha.version>2.3.2</kaptcha.version>
+        <pagehelper.boot.version>1.4.1</pagehelper.boot.version>
+        <commons.io.version>2.11.0</commons.io.version>
+        <commons.fileupload.version>1.4</commons.fileupload.version>
+        <hutool-all.version>5.7.21</hutool-all.version>
+        <pagehelper-spring-boot-starter.version>1.4.1</pagehelper-spring-boot-starter.version>
+        <y3lq-common-core.version>1.0</y3lq-common-core.version>
+        <y3lq-common-security.version>1.0</y3lq-common-security.version>
+        <y3lq-common-redis.version>1.0</y3lq-common-redis.version>
+        <y3lq-api-system.version>1.0</y3lq-api-system.version>
+        <y3lq-thirdparty.version>1.0</y3lq-thirdparty.version>
+        <y3lq-api-auth.version>1.0</y3lq-api-auth.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- SpringCloud 微服务 -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- SpringCloud Alibaba 微服务 -->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${spring-cloud-alibaba.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- SpringBoot 依赖配置 -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!--  SpringBoot 监控客户端 -->
+<!--            <dependency>-->
+<!--                <groupId>de.codecentric</groupId>-->
+<!--                <artifactId>spring-boot-admin-starter-client</artifactId>-->
+<!--                <version>${spring-boot-admin.version}</version>-->
+<!--            </dependency>-->
+
+            <!-- Mybatis 依赖配置 -->
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>${spring-boot.mybatis}</version>
+            </dependency>
+
+            <!-- 验证码 -->
+            <dependency>
+                <groupId>com.github.penggle</groupId>
+                <artifactId>kaptcha</artifactId>
+                <version>${kaptcha.version}</version>
+            </dependency>
+
+            <!-- io常用工具类 -->
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons.io.version}</version>
+            </dependency>
+
+            <!-- hutool工具包 -->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool-all.version}</version>
+            </dependency>
+
+            <!-- 分页插件 -->
+            <dependency>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper-spring-boot-starter</artifactId>
+                <version>${pagehelper-spring-boot-starter.version}</version>
+            </dependency>
+
+
+            <dependency>
+                <groupId>cn.y3lq.blog</groupId>
+                <artifactId>y3lq-auth</artifactId>
+                <version>1.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.y3lq.blog</groupId>
+                <artifactId>y3lq-common-security</artifactId>
+                <version>${y3lq-common-security.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.y3lq.blog</groupId>
+                <artifactId>y3lq-common-core</artifactId>
+                <version>${y3lq-common-core.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.y3lq.blog</groupId>
+                <artifactId>y3lq-common-redis</artifactId>
+                <version>${y3lq-common-redis.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.y3lq.blog</groupId>
+                <artifactId>y3lq-api-system</artifactId>
+                <version>${y3lq-api-system.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.y3lq.blog</groupId>
+                <artifactId>y3lq-thirdparty</artifactId>
+                <version>${y3lq-thirdparty.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.y3lq.blog</groupId>
+                <artifactId>y3lq-api-auth</artifactId>
+                <version>${y3lq-api-auth.version}</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-plugin-plugin</artifactId>
+                <version>3.6.4</version>
+
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.2</version>
+                <configuration>
+                    <testFailureIgnore>true</testFailureIgnore>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+
+
+
+</project>

@@ -1,0 +1,27 @@
+server:
+  port: 12000
+
+spring:
+  application:
+    name: y3lq-thirdparty
+
+  profiles:
+    active: dev
+
+  cloud:
+    alicloud:
+      access-key: 
+      secret-key: 
+      oss:
+        endpoint: oss-cn-shenzhen.aliyuncs.com
+        bucket: y3lq-blog
+    nacos:
+      discovery:
+        server-addr: 1.12.52.16:8848
+        namespace: e47ec257-e7a4-4d5f-9194-17c5e007fad2
+      config:
+        server-addr: 1.12.52.16:8848
+        namespace: e47ec257-e7a4-4d5f-9194-17c5e007fad2
+        file-extension: yaml
+        shared-configs:
+          - application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}

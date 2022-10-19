@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.y3lq.blog.system.mapper.ArticleMapper">
+
+    <resultMap type="cn.y3lq.blog.system.entity.ArticleEntity" id="articleEntityMap">
+        <result property="articleId" column="article_id"/>
+        <result property="title" column="title"/>
+        <result property="summary" column="summary"/>
+        <result property="thumbnail" column="thumbnail"/>
+        <result property="content" column="content"/>
+        <result property="commentCount" column="comment_count"/>
+        <result property="orderNum" column="order_num"/>
+        <result property="status" column="status"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <resultMap type="cn.y3lq.blog.system.vo.ArticleVO" id="articleVO">
+        <result property="articleId" column="article_id"/>
+        <result property="title" column="title"/>
+        <result property="summary" column="summary"/>
+        <result property="thumbnail" column="thumbnail"/>
+        <result property="content" column="content"/>
+        <result property="commentCount" column="comment_count"/>
+        <result property="orderNum" column="order_num"/>
+        <result property="status" column="status"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="authorNickname" column="nickname"/>
+        <result property="authorUsername" column="username"/>
+        <result property="authorUserId" column="user_id"/>
+        <collection property="tagEntity" ofType="cn.y3lq.blog.system.entity.TagEntity" select="selectArticleTagList"
+                    column="article_id"/>
+    </resultMap>
+    <resultMap type="cn.y3lq.blog.system.vo.BlogArticleVO" id="BlogArticleVO">
+        <result property="articleId" column="article_id"/>
+        <result property="title" column="title"/>
+        <result property="summary" column="summary"/>
+        <result property="thumbnail" column="thumbnail"/>
+        <result property="content" column="content"/>
+        <result property="commentCount" column="comment_count"/>
+        <result property="orderNum" column="order_num"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="authorNickname" column="nickname"/>
+        <result property="authorUserId" column="user_id"/>
+        <collection property="tags" ofType="list" select="selectArticleTagNameList"
+                    column="article_id"/>
+    </resultMap>
+
+    <insert id="insertArticle" useGeneratedKeys="true" keyProperty="articleId">
+        INSERT INTO `article` (
+        <if test="title != null and title != ''">title,</if>
+        <if test="summary != null and summary != '' ">summary,</if>
+        <if test="thumbnail != null and thumbnail != ''">thumbnail,</if>
+        <if test="content != null and content != ''">content,</if>
+        <if test="commentCount != null">comment_count,</if>
+        <if test="likeCount != null">like_count,</if>
+        <if test="orderNum != null">order_num,</if>
+        <if test="status != null and status != ''">status,</if>
+        <if test="delFlag != null and delFlag != ''">del_flag,</if>
+        <if test="createBy != null and createBy != ''">create_by,</if>
+        create_time
+        )VALUES (
+        <if test="title != null and title != ''">#{title},</if>
+        <if test="summary != null and summary != '' ">#{summary},</if>
+        <if test="thumbnail != null and thumbnail != ''">#{thumbnail},</if>
+        <if test="content != null and content != ''">#{content},</if>
+        <if test="commentCount != null">#{commentCount},</if>
+        <if test="likeCount != null">#{likeCount},</if>
+        <if test="orderNum != null">#{orderNum},</if>
+        <if test="status != null and status != ''">#{status},</if>
+        <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+        <if test="createBy != null and createBy != ''">#{createBy},</if>
+        sysdate()
+        )
+    </insert>
+
+
+    <select id="selectArticleList" resultMap="articleVO">
+        SELECT a.article_id,
+        a.title,
+        a.summary,
+        a.thumbnail,
+        a.content,
+        a.comment_count,
+        a.order_num,
+        a.status,
+        a.create_time,
+        a.update_time,
+        u.username,
+        u.nickname,
+        u.user_id
+        FROM `article` a
+        LEFT JOIN `user` u ON a.create_by = u.user_id
+        <where>
+            a.del_flag = '0' AND u.del_flag = '0'
+            <if test="title != null and title !=''">
+                AND a.title LIKE concat('%',#{title},'%')
+            </if>
+            <if test="authorUsername != null and authorUsername !=''">
+                AND u.username LIKE concat('%',#{authorUsername},'%')
+            </if>
+            ORDER BY a.order_num DESC ,a.create_time DESC
+        </where>
+    </select>
+
+    <select id="selectArticleTagList" resultMap="cn.y3lq.blog.system.mapper.TagMapper.tagEntityMap">
+        SELECT tag_id, name
+        FROM `tag`
+        WHERE tag_id IN (SELECT tag_id FROM `article_tag` WHERE article_id = #{article_id})
+          AND del_flag = '0'
+    </select>
+
+
+    <update id="updateArticle">
+        UPDATE `article` SET
+        <if test="title != null and title !=''">title = #{title},</if>
+        <if test="summary != null and summary !=''">summary = #{summary},</if>
+        <if test="thumbnail != null and thumbnail !=''">thumbnail = #{thumbnail},</if>
+        <if test="content != null and content !=''">content = #{content},</if>
+        <if test="orderNum != null ">order_num = #{orderNum},</if>
+        <if test="status != null and status !=''">status = #{status},</if>
+        <if test="updateBy != null and updateBy !=''">update_by = #{updateBy},</if>
+        update_time = sysdate()
+        WHERE article_id = #{articleId}
+    </update>
+
+    <update id="deleteArticle">
+        UPDATE `article`
+        SET del_flag = '1'
+        WHERE article_id IN
+        (<foreach collection="articleIds" item="articleId" separator=",">
+        #{articleId}
+    </foreach>)
+    </update>
+
+    <select id="selectBlogArticleList" resultMap="BlogArticleVO">
+        SELECT a.article_id,
+        a.title,
+        a.summary,
+        a.thumbnail,
+        a.comment_count,
+        a.order_num,
+        a.create_time,
+        a.update_time,
+        u.nickname,
+        u.user_id
+        FROM `article` a
+        LEFT JOIN `user` u ON a.create_by = u.user_id
+        <where>
+            a.del_flag = '0' AND u.del_flag = '0' AND a.status ='0'
+            ORDER BY a.create_time DESC
+        </where>
+    </select>
+
+    <select id="selectArticleTagNameList" resultType="string">
+        SELECT name
+        FROM `tag`
+        WHERE tag_id IN (SELECT tag_id FROM `article_tag` WHERE article_id = #{article_id})
+          AND del_flag = '0'
+    </select>
+
+    <select id="getArticleById" resultMap="BlogArticleVO">
+        SELECT a.article_id,
+        a.title,
+        a.summary,
+        a.thumbnail,
+        a.content,
+        a.comment_count,
+        a.order_num,
+        a.create_time,
+        a.update_time,
+        u.nickname,
+        u.user_id
+        FROM `article` a
+        LEFT JOIN `user` u ON a.create_by = u.user_id
+        <where>
+            a.del_flag = '0' AND u.del_flag = '0' AND a.status ='0' AND a.article_id = #{articleId}
+            ORDER BY a.create_time DESC
+        </where>
+    </select>
+
+    <select id="selectRecommendArticleList" resultMap="BlogArticleVO">
+        SELECT a.article_id,
+        a.title,
+        a.summary,
+        a.thumbnail,
+        a.content,
+        a.comment_count,
+        a.order_num,
+        a.create_time,
+        a.update_time,
+        u.nickname,
+        u.user_id
+        FROM `article` a
+        LEFT JOIN `user` u ON a.create_by = u.user_id
+        <where>
+            a.del_flag = '0' AND u.del_flag = '0' AND a.status ='0'
+            AND a.order_num IS NOT NULL
+            ORDER BY a.order_num ASC
+        </where>
+    </select>
+
+    <update id="addCommentCount">
+        UPDATE `article`
+        SET comment_count = comment_count + 1
+        WHERE article_id = #{articleId}
+    </update>
+
+    <update id="reduceArticleCommentCount">
+        UPDATE article
+        SET comment_count =comment_count - #{count}
+        WHERE article_id = #{articleId};
+    </update>
+
+
+</mapper>
