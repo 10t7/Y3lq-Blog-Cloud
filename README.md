@@ -106,4 +106,42 @@ Nacos作为服务注册中心以及配置中心，服务之间的调用采用了
 2. 发起请求获取当前用户拥有的路由，前端获取路由信息动态渲染页面，并且按钮会根据当前用户的权限动态显示
 
 
+## 后台管理
+
+基于 [vue-element-admin](https://panjiachen.github.io/vue-element-admin-site/zh/guide/) 以及 element-ui
+
+
+
+
+## 博客前台
+
+主要基于 [vuetify官方主题](https://material-landing.vuetifyjs.com/)以及 [vuetify ui](https://vuetify.cn/zh-Hans/  )
+
+
+
+
+
+## 项目
+
+项目结构
+
+```tex
+Y3lq-Blog-Cloud
+└── y3lq-api    					// 接口模块
+     ├── y3lq-api-auth    					// 认证中心接口
+     └── y3lq-api-system    				// 系统接口
+├── y3lq-auth    					// 认证中心[10000]
+└── y3lq-common    				// 通用模块
+     ├── y3lq-common-core    				// 核心模块
+     ├── y3lq-common-redis     			// 缓存服务
+     └── y3lq-common-security    		// 安全模块
+├── y3lq-gateway    			// 网关模块[8080]
+└── y3lq-modules    			// 业务模块
+     ├── y3lq-system    						// 系统模块[11000]
+     └── y3lq-thirdparty    				// 第三方服务模块[12000]
+```
+
+
+
+
 
